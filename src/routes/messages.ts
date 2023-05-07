@@ -3,10 +3,12 @@ import { body, query } from 'express-validator';
 import * as controller from '../controllers/message';
 import requestValidator from '../middlewares/request-validator';
 import sessionValidator from '../middlewares/session-validator';
+import secretValidator from '../middlewares/secret-validator';
 
 const router = Router({ mergeParams: true });
 router.get(
   '/',
+  secretValidator,
   query('cursor').isNumeric().optional(),
   query('limit').isNumeric().optional(),
   requestValidator,
@@ -14,6 +16,7 @@ router.get(
 );
 router.post(
   '/send',
+  secretValidator,
   body('jid').isString().notEmpty(),
   body('type').isString().isIn(['group', 'number']).optional(),
   body('message').isObject().notEmpty(),
@@ -24,6 +27,7 @@ router.post(
 );
 router.post(
   '/send/bulk',
+  secretValidator,
   body().isArray().notEmpty(),
   requestValidator,
   sessionValidator,
@@ -31,6 +35,7 @@ router.post(
 );
 router.post(
   '/download',
+  secretValidator,
   body().isObject().notEmpty(),
   requestValidator,
   sessionValidator,
